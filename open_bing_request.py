@@ -4,9 +4,9 @@ import login_data
 import random
 
 path_wortlist = 'wordlist.txt'
-bing_username = login_data.bing_jonas_username()
-bing_password = login_data.bing_jonas_password()
-bing_pc_search_count = 30
+bing_username = login_data.bing_tim_username()
+bing_password = login_data.bing_tim_password()
+bing_pc_search_count = 31
 bing_mobile_search_count = 20
 
 
@@ -89,7 +89,7 @@ def bing_mobile_search():
 
 
 def bing_do_task():
-    time.sleep(8)
+    time.sleep(3)
     try:
         driver.find_element_by_id('rqStartQuiz')
         quiz = True
@@ -107,21 +107,40 @@ def bing_do_task():
 
         driver.find_element_by_id('btoption0').click()
         time.sleep(5)
-
-    if quiz == True:
-        driver.find_element_by_id('rqStartQuiz').click()
-        button_quiz = driver.find_elements_by_class_name('bt_cardText')
-        time.sleep(3)
-        for i in range(3):
-            time.sleep(4)
-            for i in range(len(button_quiz)):
-                time.sleep(3)
+    for z in range(1):
+        print(z)
+        if quiz == True:
+            driver.find_element_by_id('rqStartQuiz').click()
+            try:
+                driver.find_element_by_id('rqAnswerOption0')
+                quiz_2 = True
+                break
+            except:
+                print('quiz 1 ')
+            button_quiz = driver.find_elements_by_class_name('bt_cardText')
+            time.sleep(3)
+            for i in range(3):
+                time.sleep(4)
+                for i in range(len(button_quiz)):
+                    time.sleep(3)
+                    try:
+                        button_quiz = driver.find_elements_by_class_name(
+                            'bt_cardText')
+                        button_quiz[i].click()
+                    except:
+                        print('error1001')
+    if quiz_2 == True:
+        for j in range(3):
+            time.sleep(3)
+            for w in range(4):
                 try:
-                    button_quiz = driver.find_elements_by_class_name(
-                        'bt_cardText')
-                    button_quiz[i].click()
+                    time.sleep(2)
+                    button_quiz_2 = driver.find_elements_by_class_name(
+                        'rqOption')
+                    button_quiz_2[w].click()
+
                 except:
-                    print('error1001')
+                    print('a wizzard has appeard')
 
 
 def do_bing_daily_task():
@@ -180,3 +199,5 @@ mobile_driver.quit()
 
 # https://www.bing.com/search?q=Was%20ist%20Sport?&rnoreward=1&mkt=DE-DE&FORM=ML12JG&skipopalnative=true&rqpiodemo=1&filters=BTEPOKey:%22REWARDSQUIZ_DEDE_MicrosoftRewardsQuizDS20210526%22%20BTROID:%22Gamification_DailySet_DEDE_20210526_Child2%22%20BTROEC:%220%22%20BTROMC:%2230%22
 # https://www.bing.com/search?q=Europa&rnoreward=1&mkt=DE-DE&FORM=ML12JG&skipopalnative=true&rqpiodemo=1&filters=BTEPOKey:%22REWARDSQUIZ_DEDE_ThisOrThat_Europe_Capitals_B_M_S_EB_20210607%22%20BTROID:%22Gamification_DailySet_DEDE_20210607_Child2%22%20BTROEC:%220%22%20BTROMC:%2250%22%20BTROQN:%220%22
+# https://www.bing.com/search?q=Kochen%20lernen%20Videos&rnoreward=1&mkt=DE-DE&FORM=ML12JG&skipopalnative=true&rqpiodemo=1&filters=BTEPOKey:%22REWARDSQUIZ_DEDE_MicrosoftRewardsQuizDS20210609%22%20BTROID:%22Gamification_DailySet_DEDE_20210609_Child2%22%20BTROEC:%220%22%20BTROMC:%2230%22
+# https://www.bing.com/search?q=Kochen%20lernen%20Videos&rnoreward=1&mkt=DE-DE&FORM=ML12JG&skipopalnative=true&rqpiodemo=1&filters=BTEPOKey:%22REWARDSQUIZ_DEDE_MicrosoftRewardsQuizDS20210609%22%20BTROID:%22Gamification_DailySet_DEDE_20210609_Child2%22%20BTROEC:%220%22%20BTROMC:%2230%22
