@@ -6,7 +6,7 @@ import random
 path_wortlist = 'wordlist.txt'
 username_list = login_data.get_username_login()
 password_list = login_data.get_password_login()
-maxwait = 5
+maxwait = 3
 minwait = 2
 
 
@@ -28,13 +28,16 @@ def bing_pc_search():
 
 def get_pc_search():
     driver.get('https://www.bing.com///rewardsapp///flyout')
+
+    sleep()
     element = driver.find_element_by_xpath(
         '//*[@id="modern-flyout"]/div/div[5]/div/div[2]/div[1]/div/div').text.split("/")
     element1 = driver.find_element_by_xpath(
-        '//*[@id="modern-flyout"]/div/div[5]/div/div[2]/div[3]/div/div').text.split("/")
+        '//*[@id="modern-flyout"]/div/div[5]/div/div[2]/div[2]/div/div').text.split("/")  # probaly wrong div
     number = (int(element[1]) - int(element[0]) +
               (int(element1[1]) - int(element1[0])))/3
     driver.get('https://www.bing.com/')
+    print(number)
     return int(number)
 
 
@@ -68,8 +71,10 @@ def login_bing(counter_acc):
     except:
         print('error 23123 no cookie button found', end='')
     try:
+        time.sleep(2)  # hin
         sleep()
         driver.find_element_by_id('id_n').click()
+        sleep()
         sleep()
         driver.find_element_by_class_name('id_link_text').click()
         sleep()
@@ -119,6 +124,7 @@ def bing_mobile_login(counter_acc):
     sleep()
     mobile_driver.find_element_by_id('hb_s').click()
     sleep()
+    # dont know what is happening some time works tomtiens not
     mobile_driver.find_element_by_id(
         'i0116').send_keys(username_list[counter_acc])
     sleep()
@@ -161,6 +167,7 @@ def scan_daily_task():
 
 
 def bing_do_task():
+    sleep()  # eddit
     sleep()
     try:
         driver.find_element_by_id('rqStartQuiz')
@@ -199,11 +206,17 @@ def do_quiz_1():
     list_len = len(driver.find_elements_by_css_selector(
         'div.b_cards[iscorrectoption="True"]'))
     print("List_len: " + str(list_len) + ' |', end='')
-    for i in range(3):
+    for i in range(3):  # 3 ?
+        time.sleep(7)  # hin
         for t in range(len(driver.find_elements_by_css_selector('div.b_cards[iscorrectoption="True"]'))):
             sleep()
-            driver.find_elements_by_css_selector(
-                'div.b_cards[iscorrectoption="True"]')[t].click()
+
+            try:
+                driver.find_elements_by_css_selector(
+                    'div.b_cards[iscorrectoption="True"]')[t].click()
+                sleep()  # hinzugefügt
+            except:
+                print('something went wrong |', end='')
 
 
 def do_quiz_2():
@@ -220,7 +233,8 @@ def do_quiz_2():
                 print('The Cake is a lie |', end='')
 
 
-for counter_acc in range(len(username_list)):
+counter_acc = 0
+for j in range(len(username_list)):
     driver = webdriver.Edge('msedgedriver.exe')
     login_bing(counter_acc)
     scan_daily_task()
@@ -234,3 +248,4 @@ for counter_acc in range(len(username_list)):
     bing_mobile_search()
     print('mobile search done |', end='')
     mobile_driver.quit()
+    counter_acc = counter_acc + 1
