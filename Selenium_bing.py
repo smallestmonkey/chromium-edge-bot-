@@ -3,11 +3,18 @@ import time
 import login_data
 import random
 
+
 path_wortlist = 'wordlist.txt'
 username_list = login_data.get_username_login()
 password_list = login_data.get_password_login()
 maxwait = 3
 minwait = 2
+shortmin = 0.2
+shortmax = 1
+
+
+def shortsleep():
+    time.sleep(random.uniform(shortmin, shortmax))
 
 
 def sleep():
@@ -19,11 +26,10 @@ def bing_pc_search():
     for i in range(get_pc_search()):
         words = open(path_wortlist).read().split('\n')
         bing_search_field = driver.find_element_by_id('sb_form_q')
-        sleep()
         bing_search_field.send_keys(random.choice(words) + ' ')
-        sleep()
+        shortsleep()
         bing_search_field.submit()
-        sleep()
+        shortsleep()
 
 
 def get_pc_search():
@@ -56,11 +62,10 @@ def bing_mobile_search():
         words = open(path_wortlist).read().split('\n')
         bing_search_mobile_field = mobile_driver.find_element_by_id(
             'sb_form_q')
-        sleep()
         bing_search_mobile_field.send_keys(random.choice(words) + ' ')
-        sleep()
+        shortsleep()
         bing_search_mobile_field.submit()
-        sleep()
+        shortsleep()
 
 
 def login_bing(counter_acc):
