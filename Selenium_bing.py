@@ -69,51 +69,48 @@ def bing_mobile_search():
 
 
 def login_bing(counter_acc):
-    driver.get('https://www.bing.com/')
-    sleep()
     try:
-        driver.find_element_by_id('bnp_btn_accept').click()
+        driver.get('https://www.bing.com/')
+        sleep()
+        try:
+            driver.find_element_by_id('bnp_btn_accept').click()
+        except:
+            print('error 23123 no cookie button found', end='')
+        sleep()
+        try:
+            driver.find_element_by_id('id_s').click()
+            sleep()
+            driver.find_element_by_class_name('id_link_text').click()
+            sleep()
+            driver.find_element_by_id('id_s').click()
+            shortsleep()
+        except:
+            print('', end='')
+        sleep()
+        driver.find_element_by_id('i0116').send_keys(
+            username_list[counter_acc])
+        sleep()
+        driver.find_element_by_id('idSIButton9').click()
+        sleep()
+        try:
+            driver.find_element_by_id('msaTile').click()
+            sleep()
+        except:
+            print('', end='')
+        driver.find_element_by_id('i0118').send_keys(
+            password_list[counter_acc])
+        sleep()
+        driver.find_element_by_id('idSIButton9').click()
     except:
-        print('error 23123 no cookie button found', end='')
-    try:
-        time.sleep(2)  # hin
-        sleep()
-        driver.find_element_by_id('id_n').click()
-        sleep()
-        sleep()
-        driver.find_element_by_class_name('id_link_text').click()
-        sleep()
-        driver.find_element_by_id('id_n').click()
-        sleep()
-        driver.find_element_by_class_name('id_link_text').click()
-    except:
-        print('no logout need or it failed', end='')
-
-    sleep()
-    try:
-        driver.find_element_by_id('id_s').click()
-    except:
-        print('', end='')
-
-    sleep()
-    driver.find_element_by_id('i0116').send_keys(username_list[counter_acc])
-    sleep()
-    driver.find_element_by_id('idSIButton9').click()
-    sleep()
-    try:
-        driver.find_element_by_id('msaTile').click()
-        sleep()
-    except:
-        print('', end='')
-    driver.find_element_by_id('i0118').send_keys(password_list[counter_acc])
-    sleep()
-    driver.find_element_by_id('idSIButton9').click()
+        print('big login error restart login')
+        login_bing()
 
 
 def get_mobile_driver():
     mobile_emulation = {"deviceName": "Nexus 5"}
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+    chrome_options.add_experimental_option(
+        "mobileEmulation", mobile_emulation)
     return webdriver.Chrome('chromedriver.exe', options=chrome_options)
 
 
@@ -196,6 +193,11 @@ def bing_do_task():
         driver.find_element_by_id('rqStartQuiz').click()
         sleep()
         try:
+            driver.find_element_by_class_name('btCardImg')
+            do_quiz_3()
+        except:
+            print('', end='')
+        try:
             driver.find_elements_by_class_name("bt_cardText")
             do_quiz_1()
         except:
@@ -238,9 +240,19 @@ def do_quiz_2():
                 print('The Cake is a lie |', end='')
 
 
+def do_quiz_3():
+    for d in range(10):
+        sleep()
+        button_quiz_3 = driver.find_elements_by_class_name(
+            'btCardImg')
+        sleep()
+        button_quiz_3[1].click()
+
+
 counter_acc = 0
 for j in range(len(username_list)):
     driver = webdriver.Edge('msedgedriver.exe')
+    driver.get('https://bing.com')
     login_bing(counter_acc)
     scan_daily_task()
     print('daily task done |', end='')
@@ -254,3 +266,4 @@ for j in range(len(username_list)):
     print('mobile search done |', end='')
     mobile_driver.quit()
     counter_acc = counter_acc + 1
+# driver.find_element_by_id('id_rc').text()
