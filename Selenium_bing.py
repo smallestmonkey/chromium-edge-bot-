@@ -2,6 +2,14 @@ from selenium import webdriver
 import time
 import login_data
 import random
+import automate_excel
+from openpyxl import load_workbook
+import datetime
+from msedge.selenium_tools import EdgeOptions
+
+options = EdgeOptions()
+options.use_chromium = True
+options.add_argument('log-level=3')
 
 
 path_wortlist = 'wordlist.txt'
@@ -207,6 +215,13 @@ def bing_do_task():
             do_quiz_2()
         except:
             print('', end='')
+        try:
+            driver.find_elements_by_css_selector(
+                'div.b_cards[iscorrectoption="True"]')
+            do_quiz_1()
+            print('do quiz 1 again beacause it failed before')
+        except:
+            print('', end='')
 
 
 def do_quiz_1():
@@ -249,15 +264,43 @@ def do_quiz_3():
         button_quiz_3[1].click()
 
 
+def get_points():
+    driver.get('https://www.bing.com/')
+    sleep()
+    points = driver.find_element_by_id('id_rc').text
+    return points
+
+# date_format = "%m/%d/%Y"
+
+
+def get_excel_data(counter_excel):
+    wb = load_workbook(r"C:\Users\lauri\Desktop\points.xlsx")
+    points = get_points()
+    wb.active = counter_excel
+    ws = wb.active
+    print(wb.active)
+    first_day = datetime.date(2021, 6, 30)
+    today = datetime.date.today()
+    sub_date = today - first_day
+    sub_date = sub_date.days + 2
+    print(sub_date)
+    print(today)
+    ws.cell(row=sub_date, column=2, value=points)
+    ws.cell(row=sub_date, column=1, value=today.strftime('%d.%m.%y'))
+    wb.save(r"C:\Users\lauri\Desktop\points.xlsx")
+
+
 counter_acc = 0
+counter_excel = 1
 for j in range(len(username_list)):
-    driver = webdriver.Edge('msedgedriver.exe')
+    driver = webdriver.Edge('msedgedriver.exe', options)
     driver.get('https://bing.com')
     login_bing(counter_acc)
     scan_daily_task()
     print('daily task done |', end='')
     bing_pc_search()
     print('bing search done |', end='')
+    get_excel_data(counter_excel)
     driver.quit()
 
     mobile_driver = get_mobile_driver()
@@ -265,5 +308,5 @@ for j in range(len(username_list)):
     bing_mobile_search()
     print('mobile search done |', end='')
     mobile_driver.quit()
+    counter_excel = counter_excel + 1
     counter_acc = counter_acc + 1
-# driver.find_element_by_id('id_rc').text()
