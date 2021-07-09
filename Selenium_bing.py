@@ -8,7 +8,7 @@ from msedge.selenium_tools import Edge
 from msedge.selenium_tools import EdgeOptions
 from colorama import Fore, Back, init
 
-
+excel_path = r"C:\Users\lauri\Desktop\points.xlsx"
 path_wortlist = 'wordlist.txt'
 username_list = login_data.get_username_login()
 password_list = login_data.get_password_login()
@@ -17,7 +17,7 @@ minwait = 2
 shortmin = 0.2
 shortmax = 1
 counter_acc = 0
-counter_excel = counter_acc + 1
+counter_excel = 1
 
 
 edge_options = EdgeOptions()
@@ -51,7 +51,6 @@ def bing_pc_search():
 
 def get_pc_search():
     driver.get('https://www.bing.com///rewardsapp///flyout')
-
     sleep()
     element = driver.find_element_by_xpath(
         '//*[@id="modern-flyout"]/div/div[5]/div/div[2]/div[1]/div/div').text.split("/")
@@ -66,11 +65,20 @@ def get_pc_search():
 
 def get_mobile_search():
     mobile_driver.get('https://www.bing.com///rewardsapp///flyout')
-
     element = mobile_driver.find_element_by_xpath(
         '//*[@id="modern-flyout"]/div/div[5]/div/div[2]/div[3]/div/div').text.split("/")
     number = (int(element[1]) - int(element[0]))/3
     mobile_driver.get('https://www.bing.com/')
+    print(str(number) + ' mobil search |', end='')
+    return int(number)
+
+
+def get_mobile_search_on_pc():
+    driver.get('https://www.bing.com///rewardsapp///flyout')
+    element = driver.find_element_by_xpath(
+        '//*[@id="modern-flyout"]/div/div[5]/div/div[2]/div[3]/div/div').text.split("/")
+    number = (int(element[1]) - int(element[0]))/3
+    driver.get('https://www.bing.com/')
     print(str(number) + ' mobil search |', end='')
     return int(number)
 
@@ -172,92 +180,69 @@ def bing_mobile_login(counter_acc_int):
 def scan_daily_task():
     driver.get('https://www.bing.com///rewardsapp///flyout')
     list_len = len(driver.find_elements_by_class_name('rw-si.add'))
-    print("List_len: " + str(list_len) + '|', end='')
+    print("daily task:" + str(list_len) + '|', end='')
     while list_len != 0:
         driver.find_elements_by_class_name('rw-si.add')[0].click()
-        bing_do_task()
+        bing_do_task(quiz=False)
         driver.get('https://www.bing.com///rewardsapp///flyout')
         sleep()
         list_len = len(driver.find_elements_by_class_name('rw-si.add'))
-        print("List_len: " + str(list_len) + '|', end='')
+        print("daily task: " + str(list_len) + '|', end='')
     sleep()
     driver.find_element_by_class_name('i-h.rw-sh.fp_row').click()
     list_len = len(driver.find_elements_by_class_name('rw-si.add'))
-    print("List_len: " + str(list_len) + '|', end='')
+    print("daily special:" + str(list_len) + '|', end='')
     while list_len != 0:
         driver.find_elements_by_class_name('rw-si.add')[0].click()
-        bing_do_task()
+        bing_do_task(quiz=False)
         driver.get('https://www.bing.com///rewardsapp///flyout')
         sleep()
         driver.find_element_by_class_name('i-h.rw-sh.fp_row').click()
         list_len = len(driver.find_elements_by_class_name('rw-si.add'))
-        print("List_len: " + str(list_len) + '|', end='')
+        print("daily special:" + str(list_len) + '|', end='')
 
 
-def bing_do_task():
-    sleep()  # eddit
+def bing_do_task(quiz):
     sleep()
-    try:
-        driver.find_element_by_id('rqStartQuiz')
+    if len(driver.find_elements_by_id('rqStartQuiz')) > 0:
         quiz = True
-    except:
-        quiz = False
-        print('', end='')
-    try:
-        driver.find_element_by_id('btoption0')
-        survery = True
-    except:
-        survery = False
-        print('', end='')
-
-    if survery == True:
-
+    if len(driver.find_elements_by_id('btoption0')) > 0:
         driver.find_element_by_id('btoption0').click()
-        sleep()
-
+        shortsleep()
+        return
     if quiz == True:
         driver.find_element_by_id('rqStartQuiz').click()
         sleep()
-        try:
-            driver.find_element_by_class_name('btCardImg')
+        if len(driver.find_elements_by_class_name('btCardImg')) > 0:
+            print('quiz 3|', end='')
             do_quiz_3()
-            # return 0
-        except:
-            print('', end='')
-        try:
-            driver.find_elements_by_class_name("bt_cardText")
+            shortsleep()
+            return
+        if len(driver.find_elements_by_class_name("bt_cardText")) > 0:
+            print('quiz 1|', end='')
             do_quiz_1()
-            # return
-        except:
-            print('', end='')
-        try:
-            driver.find_element_by_id('rqAnswerOption0')
+            shortsleep()
+            return
+        if len(driver.find_element_by_id('rqAnswerOption0')) > 0:
+            print('quiz 2|', end='')
             do_quiz_2()
-        except:
-            print('', end='')
-        try:
-            # ich binn dumm denk nach laurin
-            driver.find_elements_by_css_selector(
-                'div.b_cards[iscorrectoption="True"]')
-            do_quiz_1()
-            print('do quiz 1 again beacause it failed before')
-        except:
-            print('', end='')
+            shortsleep()
+            return
+# vieleicht ein system das falls quiz buggt wieder neu startet ?
 
 
 def do_quiz_1():
     list_len = len(driver.find_elements_by_css_selector(
         'div.b_cards[iscorrectoption="True"]'))
-    print("List_len: " + str(list_len) + ' |', end='')
-    for i in range(3):  # 3 ?
-        time.sleep(7)  # hin
+    for i in range(3):
+        time.sleep(7)
         for t in range(len(driver.find_elements_by_css_selector('div.b_cards[iscorrectoption="True"]'))):
             sleep()
 
             try:
                 driver.find_elements_by_css_selector(
                     'div.b_cards[iscorrectoption="True"]')[t].click()
-                sleep()  # hinzugefügt
+                sleep()
             except:
                 print('something went wrong |', end='')
 
@@ -285,16 +270,25 @@ def do_quiz_3():
         button_quiz_3[1].click()
 
 
-def get_points():
+def get_points_pc():
     driver.get('https://www.bing.com/')
     sleep()
     points = driver.find_element_by_id('id_rc').text
     return points
 
 
-def get_excel_data(counter_excel):
-    wb = load_workbook(r"C:\Users\lauri\Desktop\points.xlsx")
-    points = get_points()
+def get_points_mobile():
+    mobile_driver.get('https://www.bing.com/')
+    sleep()
+    mobile_driver.find_element_by_id('mHamburger').click()
+    sleep()
+    points = mobile_driver.find_element_by_id('fly_id_rc').text
+    return points
+
+
+def get_excel_data_mobile(counter_excel):
+    wb = load_workbook(excel_path)
+    points = get_points_mobile()
     wb.active = counter_excel
     ws = wb.active
     first_day = datetime.date(2021, 6, 30)
@@ -304,6 +298,22 @@ def get_excel_data(counter_excel):
     ws.cell(row=sub_date, column=2, value=points)
     ws.cell(row=sub_date, column=1, value=today.strftime('%d.%m.%Y'))
     wb.save(r"C:\Users\lauri\Desktop\points.xlsx")
+    print('excel Done|', end='')
+
+
+def get_excel_data_pc(counter_excel):
+    wb = load_workbook(excel_path)
+    points = get_points_pc()
+    wb.active = counter_excel
+    ws = wb.active
+    first_day = datetime.date(2021, 6, 30)
+    today = datetime.date.today()
+    sub_date = today - first_day
+    sub_date = sub_date.days + 2
+    ws.cell(row=sub_date, column=2, value=points)
+    ws.cell(row=sub_date, column=1, value=today.strftime('%d.%m.%Y'))
+    wb.save(r"C:\Users\lauri\Desktop\points.xlsx")
+    print('excel Done|', end='')
 
 
 for j in range(len(username_list)):
@@ -311,25 +321,30 @@ for j in range(len(username_list)):
     driver.get('https://bing.com')
     login_bing(counter_acc)
     scan_daily_task()
-    print('daily task done |', end='')
+    print('daily task done|', end='')
     bing_pc_search()
-    print('bing search done |', end='')
-    get_excel_data(counter_excel)
-    driver.quit()
-
-    mobile_driver = get_mobile_driver()
-    bing_mobile_login(counter_acc)
-    bing_mobile_search()
-    print('mobile search done |',)
-    mobile_driver.quit()
+    print('bing search done|', end='')
+    mobil_search_todo = get_mobile_search_on_pc()
+    if mobil_search_todo != 0:
+        driver.quit()
+        mobile_driver = get_mobile_driver()
+        bing_mobile_login(counter_acc)
+        bing_mobile_search()
+        print('mobile search done|',)
+        get_excel_data_mobile(counter_excel)
+        mobile_driver.quit()
+    else:
+        get_excel_data_pc(counter_excel)
+        driver.quit()
+    print('\n', end='')
     if counter_acc == 0:
-        print('\033[32m' + 'Laurin Done')
+        print('\033[32m' + 'Laurin Done', end='')
         print('\033[39m')
     elif counter_acc == 1:
-        print('\033[32m' + 'Tim Done')
+        print('\033[32m' + 'Tim Done', end='')
         print('\033[39m')
     elif counter_acc == 2:
-        print('\033[32m' + 'Laurin_2 Done')
+        print('\033[32m' + 'Laurin_2 Done', end='')
         print('\033[39m')
     elif counter_acc == 3:
         print('\033[32m' + 'Marvin Done')
