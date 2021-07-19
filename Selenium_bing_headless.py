@@ -25,8 +25,8 @@ edge_options = EdgeOptions()
 edge_options.add_argument('--disable-logging')
 edge_options.add_argument('log-level=3')
 edge_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-# edge_options.add_argument('headless')
-# edge_options.add_argument('disable-gpu')
+edge_options.add_argument('headless')
+edge_options.add_argument('disable-gpu')
 edge_options.use_chromium = True
 init()
 
